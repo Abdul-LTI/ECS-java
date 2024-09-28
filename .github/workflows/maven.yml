@@ -37,4 +37,4 @@ jobs:
         path: /home/runner/work/java-project/java-project/webapp/target/*.war
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build /home/runner/work/java-project/java-project/webapp/target/*.war --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
