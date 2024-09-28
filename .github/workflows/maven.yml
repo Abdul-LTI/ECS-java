@@ -33,4 +33,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: war-file
-        path: target/*.war
+        path: /home/runner/work/java-project/java-project/webapp/target/*.war
