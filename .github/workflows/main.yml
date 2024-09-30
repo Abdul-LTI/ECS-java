@@ -36,20 +36,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-    - name: Upload WAR file
-      uses: actions/upload-artifact@v4
-      with:
-        name: war-file 
-        path: /home/runner/work/java-project/java-project/webapp/target/*.war
+   
 
       # Logs in with your Azure credentials
       
@@ -83,7 +70,7 @@ jobs:
       uses: azure/k8s-deploy@v4
       with:
           manifests: |
-            deployment.yaml
+            /deployment.yaml
           images: |
             java1234.azurecr.io/project1:latest
       
