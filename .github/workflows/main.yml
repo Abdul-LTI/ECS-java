@@ -58,7 +58,7 @@ jobs:
           cluster-name: test-cluster
 
     - name: Deploy to AKS
-      run: ls -al
+      run: kubectl apply -f deployment.yml
       
       
       
