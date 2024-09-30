@@ -72,6 +72,9 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: java1234.azurecr.io/project1:latest
+
+    - name: deploy to k8s
+      run: kubectl apply -f deployment.yml
       
       
       
