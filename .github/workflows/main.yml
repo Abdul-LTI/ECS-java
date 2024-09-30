@@ -76,7 +76,7 @@ jobs:
     - name: Set AKS context
       uses: azure/aks-set-context@v3
       with:
-          resource-group: final-resouce
+          resource-group: final-resource
           cluster-name: test-cluster
 
     - name: Deploy to AKS
