@@ -63,7 +63,7 @@ jobs:
 
 
     - name: acr login 
-      run: az acr login --java1234
+      run: az acr login --name java1234
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
