@@ -73,6 +73,6 @@ jobs:
       uses: azure/k8s-deploy@v1
       with:
         manifests: |
-          /deployment.yaml
+          deployment.yml
         images: |
           ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
