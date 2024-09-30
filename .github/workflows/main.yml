@@ -61,16 +61,20 @@ jobs:
     - name: Build and push image to ACR 
       run: |
           az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} .
+          
 
-    - name: Set AKS context
-      uses: azure/aks-set-context@v2
-      with:
+  deploy:
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set AKS context
+        uses: azure/aks-set-context@v2
+        with:
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          resource-group: ${{ env.RESOURCE_GROUP }}
         
-        cluster-name: ${{ env.CLUSTER_NAME }}
-        resource-group: ${{ env.RESOURCE_GROUP }}
-
-    - name: login acr
-      run:  az acr login --name java1234
-     
-    - name: Deploy to AKS
-      run: kubectl apply -f deployment.yml
+      - name: login acr
+        run:  az acr login --name java1234
+      
+      - name: Deploy to AKS
+        run: kubectl apply -f deployment.yml
