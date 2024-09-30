@@ -59,18 +59,27 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    - name: Build and push image to ACR 
-      run: |
-        az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} .
-          
-    - name: Set AKS context
-      uses: azure/aks-set-context@v2
+  
+
+
+    - name: acr login 
+      run: az acr login --java1234
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
       with:
-          cluster-name: ${{ env.CLUSTER_NAME }}
-          resource-group: ${{ env.RESOURCE_GROUP }}
-        
-    - name: login acr
-      run:  az acr login --name java1234
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: java1234.azurecr.io/project1:latest
       
-    - name: Deploy to AKS
-      run: kubectl apply -f deployment.yml
+      
+      
+  
+
+
+
+
+    
+        
+
