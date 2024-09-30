@@ -24,7 +24,7 @@ env:
   CONTAINER_NAME: "project"
   RESOURCE_GROUP: "final-resource"
   CLUSTER_NAME: "test-cluster"
-  MANIFEST_PATH: "/deployement.yml"
+  MANIFEST_PATH: "/deployment.yml"
   
 
 
@@ -39,11 +39,7 @@ jobs:
    
 
       # Logs in with your Azure credentials
-    - name: listing files
-      run: ls -la /home/runner/work/java-project/java-project/
 
-    - name: find file
-      run: find  / -name deployment.yml 
       
     - name: Azure login
       uses: azure/login@v1.4.6
@@ -63,7 +59,7 @@ jobs:
           cluster-name: test-cluster
 
     - name: Deploy to AKS
-      run: kubectl apply -f /deployment.yml
+      run: kubectl apply -f  ${{env.MANIFEST_PATH}}
       
       
       
