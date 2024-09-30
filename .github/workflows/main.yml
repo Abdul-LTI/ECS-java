@@ -58,12 +58,7 @@ jobs:
           cluster-name: test-cluster
 
     - name: Deploy to AKS
-      uses: azure/k8s-deploy@v4
-      with:
-          manifests: |
-            deployment.yml
-          images: |
-            java1234.azurecr.io/project1:latest
+      run: ls -al
       
       
       
