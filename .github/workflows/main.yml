@@ -24,7 +24,7 @@ env:
   CONTAINER_NAME: "project"
   RESOURCE_GROUP: "final-resource"
   CLUSTER_NAME: "test-cluster"
-  MANIFEST_PATH: "/deployment.yml"
+  MANIFEST_PATH: "deployment.yml"
   
 
 
@@ -36,14 +36,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+      - name: Upload WAR file
+        uses: actions/upload-artifact@v4
+        with:
+          name: war-file 
+          path: /home/runner/work/java-project/java-project/webapp/target/*.war
+
+
+    
    
 
       # Logs in with your Azure credentials
 
       
-    - name: Azure login
-      uses: azure/login@v1.4.6
-      with:
+      - name: Azure login
+        uses: azure/login@v1.4.6
+        with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
@@ -52,14 +69,14 @@ jobs:
 
 
 
-    - name: Set AKS context
-      uses: azure/aks-set-context@v3
-      with:
+      - name: Set AKS context
+        uses: azure/aks-set-context@v3
+        with:
           resource-group: final-resource
           cluster-name: test-cluster
 
-    - name: Deploy to AKS
-      run: kubectl apply -f  ${{env.MANIFEST_PATH}}
+      - name: Deploy to AKS
+        run: kubectl apply -f  ${{env.MANIFEST_PATH}}
       
       
       
