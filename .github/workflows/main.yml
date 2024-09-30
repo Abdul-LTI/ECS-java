@@ -40,7 +40,10 @@ jobs:
 
       # Logs in with your Azure credentials
     - name: listing files
-      run: ls -la /home/runner/work/java-project/
+      run: ls -la /home/runner/work/java-project/java-project/
+
+    - name: find file
+      run: find -name deployment.yml /
       
     - name: Azure login
       uses: azure/login@v1.4.6
