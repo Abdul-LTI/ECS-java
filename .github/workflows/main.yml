@@ -49,16 +49,7 @@ jobs:
   
 
 
-    - name: acr login 
-      run: az acr login --name java1234
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v4
-      with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: java1234.azurecr.io/project1:latest
 
     - name: Set AKS context
       uses: azure/aks-set-context@v3
