@@ -24,6 +24,7 @@ env:
   CONTAINER_NAME: "project"
   RESOURCE_GROUP: "final-resource"
   CLUSTER_NAME: "test-cluster"
+  MANIFEST_PATH: "/deployement.yml"
   
 
 
