@@ -39,6 +39,8 @@ jobs:
    
 
       # Logs in with your Azure credentials
+    - name: listing files
+      run: ls -la /home/runner/work/java-project/
       
     - name: Azure login
       uses: azure/login@v1.4.6
