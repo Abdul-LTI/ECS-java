@@ -49,9 +49,6 @@ jobs:
       with:
         name: war-file 
         path: /home/runner/work/java-project/java-project/webapp/target/*.war
-    - uses: actions/checkout@v4
-
-    - uses: actions/checkout@v4
 
       # Logs in with your Azure credentials
     - name: Azure login
