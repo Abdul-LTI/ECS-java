@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: test-app-container
-        image: java1234.azurecr.io/project:${{ github.sha }}
+        image: java1234.azurecr.io/project:d5a118fe861656c448fc20e4be6ad1a5effd96eb
         ports:
         - containerPort: 80
       imagePullSecrets:
