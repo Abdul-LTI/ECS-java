@@ -18,6 +18,16 @@ on:
   pull_request:
     branches: [ "main" ]
 
+
+env:
+  AZURE_CONTAINER_REGISTRY: "java1234"
+  CONTAINER_NAME: "project"
+  RESOURCE_GROUP: "final-resource"
+  CLUSTER_NAME: "test-cluster"
+  
+
+
+
 jobs:
 
   build:
