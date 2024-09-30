@@ -70,4 +70,9 @@ jobs:
         resource-group: ${{ env.RESOURCE_GROUP }}
      
     - name: Deploy to AKS
-      run: kubectl apply -f deployment.yml 
+      uses: azure/k8s-deploy@v1
+      with:
+        manifests: |
+          ./deployment.yaml
+        images: |
+          ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
