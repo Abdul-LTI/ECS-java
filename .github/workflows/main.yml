@@ -63,5 +63,5 @@ jobs:
     - name: List WAR file path
       run: |
         echo "Listing WAR file path:"
-        find ${{ github.workspace }}/target -name "*.war"
+        ll ${{ github.workspace }}
     
