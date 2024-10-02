@@ -1,17 +1,13 @@
 # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
+ 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
 # separate terms of service, privacy policy, and support
 # documentation.
-
+ 
 name: Java CI with Maven
-
-permissions:
-  id-token: write
-  contents: read
-
+ 
 on:
   push:
     branches: [ "main" ]
@@ -19,72 +15,62 @@ on:
     branches: [ "main" ]
 
 
-env:
-  AZURE_CONTAINER_REGISTRY: "java1234"
-  CONTAINER_NAME: "project"
-  RESOURCE_GROUP: "final-resource"
-  CLUSTER_NAME: "test-cluster"
-  MANIFEST_PATH: "deployment.yml"
-  
 
-
-
+ 
 jobs:
-
   build:
-
+ 
     runs-on: ubuntu-latest
-
+ 
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
-      - name: Upload WAR file
-        uses: actions/upload-artifact@v4
-        with:
-          name: war-file 
-          path: /home/runner/work/java-project/java-project/webapp/target/*.war
-
-
-    
-   
-
-      # Logs in with your Azure credentials
-
-      
-      - name: Azure login
-        uses: azure/login@v1.4.6
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+ 
   
-
-
-
-
-      - name: Set AKS context
-        uses: azure/aks-set-context@v3
-        with:
-          resource-group: final-resource
-          cluster-name: test-cluster
-
-      - name: Deploy to AKS
-        run: kubectl apply -f  ${{env.MANIFEST_PATH}}
-      
-      
-      
-  
-
-
-
-
-    
+ 
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ID }}
+        aws-region: ap-south-1
         
+    - name: Log in to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+ 
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+          REPOSITORY: project
+      run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT     
 
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+          task-definition: ecs.json
+          container-name: ecs-container
+          image: ${{ steps.build-image.outputs.image }}    
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ecs-service
+          cluster: milestone3
+          wait-for-service-stability: true
